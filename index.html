@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Calendario de Eventos — Calendario Chris</title>
+<title>Calendario de Eventos — Consultorio Arik</title>
 <style>
   :root{
     --bg:#f8fafc;
@@ -19,6 +19,7 @@
     --shadow:0 1px 3px rgba(15,23,42,.06), 0 1px 2px rgba(15,23,42,.04);
     --radius:12px;
     --radius-sm:8px;
+    --tap:44px;
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   html,body{margin:0;padding:0;}
@@ -26,108 +27,112 @@
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
     background:var(--bg);
     color:var(--ink);
-    line-height:1.5;
+    line-height:1.45;
     -webkit-font-smoothing:antialiased;
     min-height:100vh;
+    min-height:100dvh;
   }
-  .app{max-width:1100px;margin:0 auto;padding:16px;}
+  .app{max-width:1100px;margin:0 auto;padding:12px;padding-bottom:env(safe-area-inset-bottom, 16px);}
 
   /* Header */
   header{
     background:linear-gradient(135deg,#4f46e5 0%,#6366f1 100%);
     color:#fff;
     border-radius:var(--radius);
-    padding:18px 20px;
-    margin-bottom:16px;
+    padding:14px 16px;
+    margin-bottom:12px;
     box-shadow:0 4px 12px rgba(79,70,229,.25);
   }
-  .header-top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
-  header h1{font-size:1.25rem;margin:0;font-weight:700;letter-spacing:-.02em;}
-  header .sub{opacity:.9;font-size:.8rem;margin-top:2px;}
-  .month-nav{display:flex;align-items:center;gap:8px;margin-top:12px;}
+  .header-top{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+  header h1{font-size:1.1rem;margin:0;font-weight:700;letter-spacing:-.02em;}
+  header .sub{opacity:.85;font-size:.75rem;margin-top:2px;}
+  .today-btn{
+    background:#fff;color:var(--accent);border:none;
+    padding:8px 14px;border-radius:var(--radius-sm);font-size:.8rem;font-weight:600;
+    cursor:pointer;min-height:var(--tap);white-space:nowrap;
+  }
+  .today-btn:hover{background:#f1f5f9;}
+  .month-nav{display:flex;align-items:center;gap:6px;margin-top:10px;}
   .month-nav button{
     background:rgba(255,255,255,.15);
     color:#fff;border:1px solid rgba(255,255,255,.25);
-    padding:6px 14px;border-radius:var(--radius-sm);font-size:.85rem;font-weight:600;
-    cursor:pointer;transition:background .15s;
+    padding:8px 14px;border-radius:var(--radius-sm);font-size:.9rem;font-weight:600;
+    cursor:pointer;min-height:var(--tap);min-width:var(--tap);
+    transition:background .15s;
   }
   .month-nav button:hover{background:rgba(255,255,255,.25);}
   .month-nav button:disabled{opacity:.35;cursor:not-allowed;}
-  .month-label{font-size:1.05rem;font-weight:700;min-width:200px;text-align:center;}
-  .today-btn{
-    background:#fff;color:var(--accent);border:none;
-    padding:6px 14px;border-radius:var(--radius-sm);font-size:.8rem;font-weight:600;
-    cursor:pointer;margin-left:auto;
-  }
-  .today-btn:hover{background:#f1f5f9;}
-  .toolbar{display:flex;gap:6px;margin-top:10px;}
+  .month-label{font-size:.95rem;font-weight:700;flex:1;text-align:center;}
+  .toolbar{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;}
   .toolbar button{
     background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.2);
-    padding:5px 10px;border-radius:6px;font-size:.75rem;cursor:pointer;
+    padding:8px 10px;border-radius:6px;font-size:.75rem;cursor:pointer;
+    min-height:var(--tap);
   }
   .toolbar button:hover{background:rgba(255,255,255,.22);}
 
   /* Calendar grid */
   .cal-header{
-    display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:6px;
+    display:grid;gap:4px;margin-bottom:4px;
   }
   .cal-header div{
-    text-align:center;font-size:.72rem;font-weight:700;color:var(--muted);
-    text-transform:uppercase;letter-spacing:.06em;padding:6px;
+    text-align:center;font-size:.65rem;font-weight:700;color:var(--muted);
+    text-transform:uppercase;letter-spacing:.04em;padding:4px 2px;
   }
   .cal-grid{
-    display:grid;grid-template-columns:repeat(7,1fr);gap:6px;
+    display:grid;gap:4px;
   }
   .day{
     background:var(--card);border:1px solid var(--line);border-radius:var(--radius-sm);
-    min-height:90px;padding:8px;display:flex;flex-direction:column;
+    padding:6px;display:flex;flex-direction:column;
     box-shadow:var(--shadow);transition:transform .1s,box-shadow .1s;
-    position:relative;
+    position:relative;min-height:70px;
   }
-  .day:hover{transform:translateY(-1px);box-shadow:0 4px 8px rgba(15,23,42,.08);}
-  .day.other-month{opacity:.35;background:#fafafa;}
+  .day:active{transform:scale(.98);}
+  .day.other-month{opacity:.3;background:#fafafa;}
   .day.today{border:2px solid var(--accent);}
   .day-header{
     display:flex;justify-content:space-between;align-items:center;
-    margin-bottom:4px;
+    margin-bottom:2px;gap:2px;
   }
   .day-num{
     font-size:.8rem;font-weight:700;color:var(--ink);
-    width:26px;height:26px;display:flex;align-items:center;justify-content:center;
-    border-radius:50%;
+    width:24px;height:24px;display:flex;align-items:center;justify-content:center;
+    border-radius:50%;flex-shrink:0;
   }
   .day.today .day-num{background:var(--accent);color:#fff;}
   .day-add{
-    width:22px;height:22px;border:none;background:transparent;color:var(--muted);
-    font-size:1.1rem;cursor:pointer;border-radius:50%;display:flex;align-items:center;justify-content:center;
-    transition:background .15s,color .15s;
+    width:var(--tap);height:var(--tap);border:none;background:transparent;color:var(--muted);
+    font-size:1.3rem;cursor:pointer;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    transition:background .15s,color .15s;flex-shrink:0;
   }
   .day-add:hover{background:var(--accent-soft);color:var(--accent);}
-  .events{display:flex;flex-direction:column;gap:3px;flex:1;}
+  .events{display:flex;flex-direction:column;gap:2px;flex:1;}
   .event{
-    font-size:.7rem;padding:3px 6px;border-radius:4px;
+    font-size:.65rem;padding:3px 5px;border-radius:4px;
     background:var(--accent-soft);color:var(--accent);
     border-left:3px solid var(--accent);
     cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-    font-weight:600;
-    transition:background .15s;
+    font-weight:600;transition:background .15s;
+    line-height:1.3;
   }
   .event:hover{background:#dde4ff;}
   .event.done{background:#d1fae5;color:var(--ok);border-left-color:var(--ok);}
   .event.skipped{background:#f1f5f9;color:#94a3b8;border-left-color:#94a3b8;text-decoration:line-through;}
-  .event-time{font-size:.65rem;opacity:.85;font-weight:500;}
+  .event-time{font-size:.6rem;opacity:.8;font-weight:500;}
   .day-more{
-    font-size:.68rem;color:var(--accent);cursor:pointer;padding:2px 0;
+    font-size:.65rem;color:var(--accent);cursor:pointer;padding:2px 0;
     font-weight:600;
   }
   .day-more:hover{text-decoration:underline;}
 
   /* Modal */
   .modal-backdrop{
-    position:fixed;inset:0;background:rgba(15,23,42,.45);
+    position:fixed;inset:0;background:rgba(15,23,42,.5);
     display:flex;align-items:flex-end;justify-content:center;z-index:100;
     opacity:0;pointer-events:none;transition:opacity .2s ease;
     padding:0;
+    -webkit-tap-highlight-color:transparent;
   }
   @media(min-width:640px){
     .modal-backdrop{align-items:center;padding:20px;}
@@ -138,7 +143,7 @@
     box-shadow:0 -4px 24px rgba(15,23,42,.2);
     width:100%;max-width:440px;padding:20px;
     transform:translateY(20px);transition:transform .25s ease;
-    max-height:85vh;overflow-y:auto;
+    max-height:85vh;max-height:85dvh;overflow-y:auto;
   }
   @media(min-width:640px){
     .modal{border-radius:var(--radius);transform:translateY(8px);}
@@ -149,51 +154,52 @@
   .field{margin-bottom:12px;}
   .field label{display:block;font-size:.72rem;font-weight:700;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;}
   .field input,.field select,.field textarea{
-    width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:var(--radius-sm);
-    font-size:.9rem;font-family:inherit;color:var(--ink);background:#fff;
+    width:100%;padding:12px;border:1px solid var(--line);border-radius:var(--radius-sm);
+    font-size:1rem;font-family:inherit;color:var(--ink);background:#fff;
     transition:border-color .15s,box-shadow .15s;
+    min-height:var(--tap);
   }
   .field input:focus,.field select:focus,.field textarea:focus{
     outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(79,70,229,.12);
   }
-  .field textarea{resize:vertical;min-height:50px;}
-  .conflict-hint{font-size:.76rem;margin-top:4px;min-height:16px;}
-  .modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;flex-wrap:wrap;}
+  .field textarea{resize:vertical;min-height:80px;}
+  .conflict-hint{font-size:.8rem;margin-top:6px;min-height:16px;}
+  .modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:18px;flex-wrap:wrap;}
   .btn{
     background:var(--accent);color:#fff;border:none;
-    padding:8px 16px;border-radius:var(--radius-sm);font-size:.85rem;font-weight:600;
-    cursor:pointer;transition:background .15s;
+    padding:10px 18px;border-radius:var(--radius-sm);font-size:.9rem;font-weight:600;
+    cursor:pointer;min-height:var(--tap);transition:background .15s;
   }
   .btn:hover{background:#4338ca;}
   .btn-ghost{background:transparent;color:var(--ink);border:1px solid var(--line);}
   .btn-ghost:hover{background:#f1f5f9;}
-  .btn-sm{padding:4px 8px;font-size:.75rem;}
-  .btn-del{color:var(--warn);border-color:#fecaca;}
-  .btn-del:hover{background:#fef2f2;}
+  .btn-sm{padding:6px 10px;font-size:.8rem;min-height:36px;}
 
   /* Events list inside modal */
-  .day-events-list{display:flex;flex-direction:column;gap:6px;margin:10px 0;}
+  .day-events-list{display:flex;flex-direction:column;gap:8px;margin:12px 0;}
   .day-event-item{
     display:flex;align-items:center;justify-content:space-between;
-    padding:8px 10px;background:#f8fafc;border:1px solid var(--line);border-radius:6px;
+    padding:10px 12px;background:#f8fafc;border:1px solid var(--line);border-radius:6px;
     gap:8px;
   }
   .day-event-info{flex:1;min-width:0;}
-  .day-event-title{font-size:.85rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .day-event-meta{font-size:.72rem;color:var(--muted);}
-  .day-event-actions{display:flex;gap:4px;}
+  .day-event-title{font-size:.9rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .day-event-meta{font-size:.78rem;color:var(--muted);}
+  .day-event-actions{display:flex;gap:6px;}
   .day-event-actions button{
-    background:none;border:none;cursor:pointer;font-size:.9rem;padding:2px 4px;
-    border-radius:4px;
+    background:none;border:none;cursor:pointer;font-size:1rem;padding:6px 8px;
+    border-radius:6px;min-height:var(--tap);min-width:var(--tap);
+    display:flex;align-items:center;justify-content:center;
   }
   .day-event-actions button:hover{background:#e2e8f0;}
 
   /* Toast */
   .toast{
     position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);
-    background:var(--ink);color:#fff;padding:10px 18px;border-radius:8px;font-size:.82rem;
+    background:var(--ink);color:#fff;padding:12px 20px;border-radius:10px;font-size:.85rem;
     opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:200;
     box-shadow:0 4px 12px rgba(0,0,0,.2);
+    max-width:90vw;text-align:center;
   }
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
@@ -201,6 +207,46 @@
   ::-webkit-scrollbar{width:6px;height:6px;}
   ::-webkit-scrollbar-track{background:transparent;}
   ::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px;}
+
+  /* Desktop-ish: wider, less cramped */
+  @media(min-width:768px){
+    .app{padding:20px 24px 40px;}
+    header{padding:18px 22px;}
+    header h1{font-size:1.25rem;}
+    .month-nav button{padding:8px 16px;font-size:.9rem;}
+    .month-label{font-size:1.05rem;}
+    .cal-grid{gap:6px;}
+    .day{padding:8px;min-height:100px;}
+    .day-num{width:28px;height:28px;font-size:.85rem;}
+    .event{font-size:.72rem;padding:4px 6px;}
+    .event-time{font-size:.68rem;}
+  }
+  @media(min-width:1024px){
+    .cal-grid{gap:8px;}
+    .day{min-height:120px;padding:10px;}
+    .event{font-size:.76rem;}
+  }
+
+  /* Mobile small: 2 cols, ultra compact */
+  @media(max-width:360px){
+    .app{padding:8px;padding-bottom:env(safe-area-inset-bottom, 12px);}
+    header{padding:12px 12px;}
+    header h1{font-size:1rem;}
+    .month-label{font-size:.85rem;min-width:120px;}
+    .month-nav button{padding:6px 10px;font-size:.8rem;}
+    .today-btn{padding:6px 10px;font-size:.75rem;}
+    .toolbar button{font-size:.7rem;padding:6px 8px;}
+    .cal-header div{font-size:.6rem;}
+    .day{padding:4px;min-height:60px;border-radius:6px;}
+    .day-num{width:20px;height:20px;font-size:.7rem;}
+    .day-add{width:32px;height:32px;font-size:1rem;}
+    .event{font-size:.6rem;padding:2px 4px;border-left-width:2px;}
+    .event-time{font-size:.58rem;}
+    .day-more{font-size:.62rem;}
+    .modal{padding:16px;}
+    .field input,.field select,.field textarea{padding:10px;font-size:.9rem;}
+    .btn{padding:10px 14px;font-size:.85rem;}
+  }
 </style>
 </head>
 <body>
@@ -210,14 +256,14 @@
     <div class="header-top">
       <div>
         <h1>📅 Calendario de Eventos</h1>
-        <div class="sub">Calendario Chris — gestión de eventos las 24 horas</div>
+        <div class="sub">Consultorio Arik — gestión de eventos las 24 horas</div>
       </div>
       <button class="today-btn" id="todayBtn">Hoy</button>
     </div>
     <div class="month-nav">
-      <button id="prevMonth">←</button>
+      <button id="prevMonth" aria-label="Mes anterior">←</button>
       <span class="month-label" id="monthLabel">—</span>
-      <button id="nextMonth">→</button>
+      <button id="nextMonth" aria-label="Mes siguiente">→</button>
     </div>
     <div class="toolbar">
       <button id="importBtn">📂 Importar</button>
@@ -226,7 +272,7 @@
     </div>
   </header>
 
-  <div class="cal-header">
+  <div class="cal-header" id="calHeader">
     <div>Lun</div><div>Mar</div><div>Mié</div><div>Jue</div><div>Vie</div><div>Sáb</div><div>Dom</div>
   </div>
   <div class="cal-grid" id="calGrid"></div>
@@ -240,7 +286,7 @@
 
     <div class="field">
       <label for="evTitle">Título del evento</label>
-      <input type="text" id="evTitle" placeholder="Ej: Evento laboral, recreativo, reunión, etc." autocomplete="off">
+      <input type="text" id="evTitle" placeholder="Ej: Sesión, reunión, etc." autocomplete="off">
     </div>
     <div class="field">
       <label for="evTime">Hora</label>
@@ -335,6 +381,28 @@
       .sort(function(a,b){ return a.time.localeCompare(b.time); });
   }
 
+  function applyGridStyle(){
+    var w = window.innerWidth;
+    var grid = document.getElementById("calGrid");
+    var header = document.getElementById("calHeader");
+    if(w <= 360){
+      grid.style.gridTemplateColumns = "repeat(2, 1fr)";
+      header.style.gridTemplateColumns = "repeat(2, 1fr)";
+    } else if(w <= 480){
+      grid.style.gridTemplateColumns = "repeat(3, 1fr)";
+      header.style.gridTemplateColumns = "repeat(3, 1fr)";
+    } else if(w <= 640){
+      grid.style.gridTemplateColumns = "repeat(4, 1fr)";
+      header.style.gridTemplateColumns = "repeat(4, 1fr)";
+    } else if(w <= 820){
+      grid.style.gridTemplateColumns = "repeat(5, 1fr)";
+      header.style.gridTemplateColumns = "repeat(5, 1fr)";
+    } else {
+      grid.style.gridTemplateColumns = "repeat(7, 1fr)";
+      header.style.gridTemplateColumns = "repeat(7, 1fr)";
+    }
+  }
+
   function render(){
     var firstDay = new Date(viewYear, viewMonth, 1);
     var startWeekday = firstDay.getDay();
@@ -344,16 +412,18 @@
 
     $("#monthLabel").textContent = monthName(viewMonth) + " " + viewYear;
 
+    applyGridStyle();
+
     var grid = $("#calGrid");
     grid.innerHTML = "";
 
     var totalCells = Math.ceil((startOffset + daysInMonth) / 7) * 7;
 
-    for(var i=0;i<totalCells;i++){
-      var dayDiv = document.createElement("div");
+    for(let i=0;i<totalCells;i++){
+      let dayDiv = document.createElement("div");
       dayDiv.className = "day";
 
-      var dateNum, cellMonth, cellYear, dateKey;
+      let dateNum, cellMonth, cellYear, dateKey;
       if(i < startOffset){
         dateNum = daysInPrev - startOffset + i + 1;
         cellMonth = viewMonth - 1;
@@ -373,23 +443,23 @@
       }
 
       dateKey = dayKey(cellYear, cellMonth, dateNum);
-      var isToday = (cellYear === today.getFullYear() && cellMonth === today.getMonth() && dateNum === today.getDate());
+      let isToday = (cellYear === today.getFullYear() && cellMonth === today.getMonth() && dateNum === today.getDate());
       if(isToday) dayDiv.classList.add("today");
 
-      var events = getEventsForDate(dateKey);
+      let events = getEventsForDate(dateKey);
 
-      var header = document.createElement("div");
+      let header = document.createElement("div");
       header.className = "day-header";
       header.innerHTML = "<span class=\"day-num\">" + dateNum + "</span>" +
-        "<button class=\"day-add\" data-date=\"" + dateKey + "\" title=\"Agregar evento\">+</button>";
+        "<button class=\"day-add\" data-date=\"" + dateKey + "\" title=\"Agregar evento\" aria-label=\"Agregar evento\">+</button>";
       dayDiv.appendChild(header);
 
-      var evContainer = document.createElement("div");
+      let evContainer = document.createElement("div");
       evContainer.className = "events";
 
-      var maxShow = 2;
+      let maxShow = window.innerWidth <= 360 ? 1 : 2;
       events.slice(0, maxShow).forEach(function(ev){
-        var evDiv = document.createElement("div");
+        let evDiv = document.createElement("div");
         evDiv.className = "event" + (ev.done ? " done" : "") + (ev.skipped ? " skipped" : "");
         evDiv.dataset.id = ev.id;
         evDiv.dataset.date = dateKey;
@@ -403,7 +473,7 @@
       });
 
       if(events.length > maxShow){
-        var more = document.createElement("div");
+        let more = document.createElement("div");
         more.className = "day-more";
         more.textContent = "+" + (events.length - maxShow) + " más";
         more.addEventListener("click", function(e){
@@ -422,14 +492,12 @@
       grid.appendChild(dayDiv);
     }
 
-    // populate time select
     var sel = $("#evTime");
     sel.innerHTML = timeOptions().map(function(t){
       return "<option value=\"" + t + "\">" + t + "</option>";
     }).join("");
   }
 
-  // Modal handlers
   var modalOpen = false;
   var editingId = null;
   var selectedDate = null;
@@ -548,7 +616,6 @@
     toast._t = setTimeout(function(){ el.classList.remove("show"); }, 1800);
   }
 
-  // Day detail modal
   function openDayModal(dateKey, y, m, d){
     var dayDate = new Date(y, m, d);
     $("#dayModalDate").textContent = dayDate.toLocaleDateString("es-ES",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
@@ -631,7 +698,6 @@
     }
   });
 
-  // Delegation for add buttons
   $("#calGrid").addEventListener("click", function(e){
     var addBtn = e.target.closest(".day-add");
     if(addBtn){
@@ -639,7 +705,6 @@
     }
   });
 
-  // Export / Import
   $("#exportBtn").addEventListener("click", function(){
     var blob = new Blob([JSON.stringify(data, null, 2)], {type:"application/json"});
     var url = URL.createObjectURL(blob);
@@ -685,7 +750,10 @@
     toast("Todo borrado");
   });
 
-  // Init
+  window.addEventListener("resize", function(){
+    applyGridStyle();
+  });
+
   render();
 })();
 </script>
